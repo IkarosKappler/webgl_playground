@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Cube Example</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Content Description" />
+    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="author" content="Ikaros Kappler" />
+    <meta name="date" content="2017-10-30" />
+
+    <!-- Load library --->
+    <script src="glMatrix.js"></script>
+
+    <!-- Load custom scripts --->
+    <script src="initWebGL.js"></script>
+    <script src="utils.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <!--
+    <script id="shader-vs" type="x-shader/x-vertex">
+      precision mediump float;
+
+      attribute vec3 vertPosition;
+      attribute vec3 vertColor;
+      varying vec3 fragColor;
+      uniform mat4 mWorld;
+      uniform mat4 mView;
+      uniform mat4 mProj;
+
+      void main() {
+         fragColor = vertColor;
+         gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+      }
+    </script>
+
+    <script id="shader-fs" type="x-shader/x-fragment">      
+       precision mediump float;
+	
+	varying vec3 fragColor;
+	void main() {
+	  gl_FragColor = vec4(fragColor, 1.0);
+	}
+    </script>
+    -->
+    
+  </head>
+
+  <body>
+    <canvas id="canvas" width="640" height="480">
+      Your browser does not support WebGL.
+    </canvas>
+  </body>
+</html>

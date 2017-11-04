@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Cube Example</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Content Description" />
+    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="author" content="Ikaros Kappler" />
+    <meta name="date" content="2017-10-30" />
+
+    <!-- Load library --->
+    <script src="glMatrix.js"></script>
+
+    <!-- Load custom scripts --->
+    <script src="initWebGL.js"></script>
+    <script src="utils.js"></script>
+    <script src="canvasFullpage.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <!-- Define vertex shader program -->
+    <!--
+    <script id="shader-vs" type="x-shader/x-vertex">
+      precision mediump float;
+
+      attribute vec3 vertPosition;
+      attribute vec3 vertColor;
+      varying vec3 fragColor;
+      uniform mat4 mWorld;
+      uniform mat4 mView;
+      uniform mat4 mProj;
+
+      void main() {
+         fragColor = vertColor;
+         gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+      }
+    </script>
+    -->
+
+    
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 vertNormal;
+      attribute vec3 vertPosition;
+      attribute vec2 aTextureCoord;
+      attribute vec3 vertColor;
+    
+      uniform mat4 uNormalMatrix;
+      uniform mat4 mWorld;
+      uniform mat4 mView;
+      uniform mat4 mProj;
+      
+      varying vec2 vTextureCoord;
+      varying vec3 vLighting;
+      varying vec3 fragColor;
+    
+      void main(void) {
+        fragColor = vertColor;
+        gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+        
+        // Beleuchtungseffekt anwenden        
+        vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+        vec3 directionalLightColor = vec3(1.0, 0.0, 0.0); // 0.5, 0.5, 0.75);
+        vec3 directionalVector = vec3(0.85, 0.8, 0.75);
+        
+        vec4 transformedNormal = uNormalMatrix * vec4(vertNormal, 1.0);
+        
+        float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+        vLighting = ambientLight + (directionalLightColor * directional);
+      }
+    </script>
+    
+
+    <!-- Define fragment shader program -->
+    <!--
+    <script id="shader-fs" type="x-shader/x-fragment">      
+       precision mediump float;
+	
+       varying vec3 fragColor;
+       void main() {
+          gl_FragColor = vec4(fragColor, 1.0);
+       }
+    </script>
+    -->
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+      precision mediump float;
+
+      // The varying values passed from the vertex shader
+      varying vec2 vTextureCoord;
+      varying vec3 vLighting;
+      varying vec3 fragColor;
+      
+      uniform sampler2D uSampler;
+      
+      void main(void) {
+        /*
+        vec4 texelColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));        
+        gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+        */
+        gl_FragColor = vec4(fragColor, 1.0);
+      }
+    </script>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="640" height="480" style="width: 640px; height: 480px;">
+      Your browser does not support WebGL.
+    </canvas>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Cube Example</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Content Description" />
+    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="author" content="Ikaros Kappler" />
+    <meta name="date" content="2017-10-30" />
+
+    <script src="sylvester.js"></script>
+    <script src="glMatrix-0.9.5.min.js"></script>
+    <script src="initWebGL.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+      void main(void) {
+         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }
+    </script>
+
+    <script id="shader-vs" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      
+
+      void main(void) {
+         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+      }
+    </script>
+    
+  </head>
+
+  <body>
+    <canvas id="canvas" width="640" height="480">
+      Your browser does not support WebGL.
+    </canvas>
+  </body>
+</html>
