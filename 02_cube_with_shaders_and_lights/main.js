@@ -1,6 +1,8 @@
 /**
  * This example is based on the tutorial at
  *    http://www.kamaron.me/webgl-tutorial/02-rotating-cube
+ *  and
+ *    https://developer.mozilla.org/de/docs/Web/API/WebGL_API/Tutorial/3D-Objekte_mit_WebGL_erstellen
  *
  * @author  Ikaros Kappler
  * @date    2017-10-30
@@ -64,7 +66,6 @@
 	vertexShader = getShader(gl, 'shader-vs');
 	
 	// Erzeuge Shader
-	
 	shaderProgram = gl.createProgram();
 	gl.attachShader(shaderProgram, vertexShader);
 	gl.attachShader(shaderProgram, fragmentShader); 
@@ -85,62 +86,13 @@
     
     var cubeRotation = 0.0;
 
-    //main();
-
-    //
-    // Start here
-    //
+    // +---------------------------------------------------------------------------
+    // | Initialize the shaders.
+    // | This requires the getShader function (in utils.js) to be present.
+    // +----------------------------------------------------------------
     function start() {
-	// Vertex shader program
-	/*
-	const vsSource = `
-	attribute vec4 aVertexPosition;
-	attribute vec3 aVertexNormal;
-	attribute vec2 aTextureCoord;
-
-	uniform mat4 uNormalMatrix;
-	uniform mat4 uModelViewMatrix;
-	uniform mat4 uProjectionMatrix;
-
-	varying highp vec2 vTextureCoord;
-	varying highp vec3 vLighting;
-
-	void main(void) {
-	    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-	    vTextureCoord = aTextureCoord;
-
-	    // Apply lighting effect
-
-	    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-	    highp vec3 directionalLightColor = vec3(1, 1, 1);
-	    highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-
-	    highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
-
-	    highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-	    vLighting = ambientLight + (directionalLightColor * directional);
-	}
-	`;
-	*/
-	/*
-	// Fragment shader program
-	const fsSource = `
-	varying highp vec2 vTextureCoord;
-	varying highp vec3 vLighting;
-
-	uniform sampler2D uSampler;
-
-	void main(void) {
-	    highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
-
-	    gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
-	}
-	`;
-*/
-
 	// Initialize a shader program; this is where all the lighting
 	// for the vertices and so forth is established.
-	//const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 	const shaderProgram = initShaders();
 	
 	// Collect all the info needed to use the shader program.

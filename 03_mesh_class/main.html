@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="description" content="Content Description" />
-    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="keywords" content="webgl, cube, shader, fragment, vertex, javascript, 3d" />
     <meta name="author" content="Ikaros Kappler" />
-    <meta name="date" content="2017-10-30" />
+    <meta name="date" content="2017-11-06" />
 
     <!-- Load library --->
     <script src="glMatrix.js"></script>
@@ -15,10 +15,13 @@
     <!-- Load custom scripts --->
     <script src="initWebGL.js"></script>
     <script src="utils.js"></script>
+    <script src="glhelper.js"></script>
     <script src="canvasFullpage.js"></script>
+    <script src="CubeGeometry.js"></script>
     <script src="main.js"></script>
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 
+    <!-- Initialize the vertex shader -->
     <script id="shader-vs" type="x-shader/x-vertex">
       	attribute vec4 aVertexPosition;
 	attribute vec3 aVertexNormal;
@@ -49,6 +52,7 @@
     </script>
 
 
+    <!-- Initialize the fragment shader -->
     <script id="shader-fs" type="x-shader/x-fragment">
       varying highp vec2 vTextureCoord;
       varying highp vec3 vLighting;
