@@ -9,17 +9,18 @@
     <meta name="author" content="Ikaros Kappler" />
     <meta name="date" content="2017-11-06" />
 
-    <!-- Load library --->
-    <script src="glMatrix.js"></script>
+    <!-- Load third party libraries --->
+    <script src="lib/glMatrix.js"></script>
+    <script src="lib/dat.gui.min.js"></script>
 
     <!-- Load custom scripts --->
-    <script src="initWebGL.js"></script>
-    <script src="utils.js"></script>
-    <script src="glhelper.js"></script>
-    <script src="canvasFullpage.js"></script>
-    <script src="CubeGeometry.js"></script>
-    <script src="main.js"></script>
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script src="js/initWebGL.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/glhelper.js"></script>
+    <script src="js/canvasFullpage.js"></script>
+    <script src="js/CubeGeometry.js"></script>
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 
     <!-- Initialize the vertex shader -->
     <script id="shader-vs" type="x-shader/x-vertex">
@@ -27,6 +28,7 @@
 	attribute vec3 aVertexNormal;
 	attribute vec2 aTextureCoord;
 
+	uniform vec3 uScaleVector;
 	uniform mat4 uNormalMatrix;
 	uniform mat4 uModelViewMatrix;
 	uniform mat4 uProjectionMatrix;
@@ -35,7 +37,11 @@
 	varying highp vec3 vLighting;
 
 	void main(void) {
-	    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+	    gl_Position = aVertexPosition;
+ 	    gl_Position.x = gl_Position.x * uScaleVector.x;
+	    gl_Position.y = gl_Position.y * uScaleVector.y;
+	    gl_Position.z = gl_Position.z * uScaleVector.z;
+	    gl_Position = uProjectionMatrix * uModelViewMatrix * gl_Position; // aVertexPosition;
 	    vTextureCoord = aTextureCoord;
 
 	    // Apply lighting effect
