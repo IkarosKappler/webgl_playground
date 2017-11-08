@@ -10,6 +10,12 @@
  **/
 
 
+var Vector3 = function(x,y,z) {
+    this.x = x | 0;
+    this.y = y | 0;
+    this.z = z | 0;
+};
+
 
 // +---------------------------------------------------------------------------
 // | Don't spoil the environment: use an anonymous closure.
@@ -20,8 +26,12 @@
     var gl;
     var canvas;
     var shaderProgram;
+    var cubeGeom;
     var scene;
-    
+
+    // +---------------------------------------------------------------------------
+    // | Init will be called as soon as the page is loaded.
+    // +----------------------------------------------------------------
     var init = function() {
 	canvas = document.getElementById('canvas');
 	scene  = [];
@@ -59,16 +69,7 @@
 		 );
     }; // END function init
 
-
-    var Vector3 = function(x,y,z) {
-	this.x = x | 0;
-	this.y = y | 0;
-	this.z = z | 0;
-    };
     
-    
-    var cubeRotation = new Vector3(); // 0.0;
-
     // +---------------------------------------------------------------------------
     // | Initialize the shaders.
     // | This requires the getShader function (in utils.js) to be present.
@@ -126,7 +127,7 @@
     // +----------------------------------------------------------------
     function initBuffers(gl) {
 
-	var cubeGeom = new CubeGeometry();
+	cubeGeom = new CubeGeometry();
 	
 	// Create a buffer for the cube's vertex positions.
 	const positionBuffer = gl.createBuffer();
@@ -216,15 +217,15 @@
                        [-0.0, 0.0, -6.0]);  // amount to translate
 	mat4.rotate(modelViewMatrix,        // destination matrix
 		    modelViewMatrix,        // matrix to rotate
-		    cubeRotation.z,         // amount to rotate in radians
+		    cubeGeom.rotation.z,    // amount to rotate in radians
 		    [0, 0, 1]);             // axis to rotate around (Z)
 	mat4.rotate(modelViewMatrix,        // destination matrix
 		    modelViewMatrix,        // matrix to rotate
-		    cubeRotation.y, // * .7,    // amount to rotate in radians
+		    cubeGeom.rotation.y,    // * .7,    // amount to rotate in radians
 		    [1, 0, 0]);             // axis to rotate around (Y)
 	mat4.rotate(modelViewMatrix,        // destination matrix
 		    modelViewMatrix,        // matrix to rotate
-		    cubeRotation.x, //  * .7,    // amount to rotate in radians
+		    cubeGeom.rotation.x,     //  * .7,    // amount to rotate in radians
 		    [0, 1, 0]);             // axis to rotate around (X)
 
 	const normalMatrix = mat4.create();
@@ -260,7 +261,7 @@
 	var scale = new Float32Array([1.0,1.0,1.0], gl.STATIC_DRAW);
 	gl.uniform3f(  // Bind a 3-component-vector:float
 	    programInfo.uniformLocations.scaleVector,
-	    settings.scaleX, settings.scaleY, settings.scaleZ ); 
+	    cubeGeom.scale.x, cubeGeom.scale.y, cubeGeom.scale.z ); 
 
 	// Specify the texture to map onto the faces.
 	// Tell WebGL we want to affect texture unit 0
@@ -280,9 +281,9 @@
 	}
 
 	// Update the rotation for the next draw
-	cubeRotation.x += deltaTime;
-	cubeRotation.y += deltaTime/3;
-	cubeRotation.z += deltaTime/2;
+	cubeGeom.rotation.x += deltaTime;
+	cubeGeom.rotation.y += deltaTime/3;
+	cubeGeom.rotation.z += deltaTime/2;
     }
 
 
@@ -298,9 +299,9 @@
 
 	settings = new GLSettings();
 	var gui      = new dat.GUI();
-	gui.add(settings, 'scaleX', 0.0, 5.0);
-	gui.add(settings, 'scaleY', 0.0, 5.0);
-	gui.add(settings, 'scaleZ', 0.0, 5.0);
+	gui.add(settings, 'scaleX', 0.0, 5.0).onChange( function(val) { cubeGeom.scale.x = val; } );
+	gui.add(settings, 'scaleY', 0.0, 5.0).onChange( function(val) { cubeGeom.scale.y = val; } );
+	gui.add(settings, 'scaleZ', 0.0, 5.0).onChange( function(val) { cubeGeom.scale.z = val; } );
     };
     
     

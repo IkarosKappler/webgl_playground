@@ -19,10 +19,14 @@
     <script src="js/glhelper.js"></script>
     <script src="js/canvasFullpage.js"></script>
     <script src="js/CubeGeometry.js"></script>
+
+    <!-- Load the main script -->
     <script src="js/main.js"></script>
+
+    <!-- Load stylesheets -->
     <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 
-    <!-- Initialize the vertex shader -->
+    <!-- Define the vertex shader -->
     <script id="shader-vs" type="x-shader/x-vertex">
       	attribute vec4 aVertexPosition;
 	attribute vec3 aVertexNormal;
@@ -58,7 +62,7 @@
     </script>
 
 
-    <!-- Initialize the fragment shader -->
+    <!-- Define the fragment shader -->
     <script id="shader-fs" type="x-shader/x-fragment">
       varying highp vec2 vTextureCoord;
       varying highp vec3 vLighting;

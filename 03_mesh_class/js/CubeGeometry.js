@@ -15,6 +15,9 @@ window.CubeGeometry = (function() {
 
     var constructor = function() {
 
+	this.scale    = new Vector3(1,1,1);
+	this.rotation = new Vector3();
+	
 	// Note that this cube uses 6*4=24 vertices instead of 8.
 	// Each face has four vertices and their normals are perpendicular on _each_ face!
 	
