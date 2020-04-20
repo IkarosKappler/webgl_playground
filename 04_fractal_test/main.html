@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Fractal Test</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Content Description" />
+    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="author" content="Ikaros Kappler" />
+    <meta name="date" content="2020-04-20" />
+
+    <!-- Load custom scripts --->
+    <script src="initWebGL.js"></script>
+    <script src="utils.js"></script>
+    <script src="canvasFullpage.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <!-- Define vertex shader program -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+      precision mediump float;
+
+      attribute vec3 position;
+
+      uniform vec2 uRotationVector;
+
+      void main(void) {
+	vec2 rotatedPosition = vec2(
+	    position.x * uRotationVector.y +
+		position.y * uRotationVector.x,
+	    position.y * uRotationVector.y -
+		position.x * uRotationVector.x
+	);
+
+	gl_Position = vec4(rotatedPosition, position.z, 1.0);
+      }
+    </script>
+    
+    <!-- Define fragment shader program -->
+    <script id="shader-fs" type="x-shader/x-fragment">      
+      precision highp float;
+
+      void main(void) {
+	gl_FragColor = vec4(0.0,0.75,1.0,1.0);
+      }
+ 
+    </script>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="640" height="480" style="width: 640px; height: 480px;">
+      Your browser does not support WebGL.
+    </canvas>
+  </body>
+</html>
