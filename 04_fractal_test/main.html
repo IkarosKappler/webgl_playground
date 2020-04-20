@@ -20,19 +20,19 @@
     <script id="shader-vs" type="x-shader/x-vertex">
       precision mediump float;
 
-      attribute vec3 position;
+      attribute vec3 aPosition;
 
       uniform vec2 uRotationVector;
 
       void main(void) {
 	vec2 rotatedPosition = vec2(
-	    position.x * uRotationVector.y +
-		position.y * uRotationVector.x,
-	    position.y * uRotationVector.y -
-		position.x * uRotationVector.x
+	    aPosition.x * uRotationVector.y +
+		aPosition.y * uRotationVector.x,
+	    aPosition.y * uRotationVector.y -
+		aPosition.x * uRotationVector.x
 	);
 
-	gl_Position = vec4(rotatedPosition, position.z, 1.0);
+	gl_Position = vec4(rotatedPosition, aPosition.z, 1.0);
       }
     </script>
     
@@ -40,10 +40,30 @@
     <script id="shader-fs" type="x-shader/x-fragment">      
       precision highp float;
 
+      uniform vec2 uC;
+      uniform vec2 uCanvasSize;
+      uniform int  uIterationCount;
+
       void main(void) {
-	gl_FragColor = vec4(0.0,0.75,1.0,1.0);
-      }
- 
+         float R = (gl_FragCoord.x - uCanvasSize.x) / uCanvasSize.y;
+         float I = (gl_FragCoord.y - uCanvasSize.x) / uCanvasSize.y;
+         float R2 = R*R, I2 = I*I;
+         int mm;
+         for(int m = 0; m < 255; m++){
+			    I=(R+R)*I + uC.y;
+			    R=R2-I2 + uC.x;
+			    R2=R*R;
+			    I2=I*I;
+			    mm = m;
+			 if( R2 + I2 > 4. ) break;
+         }
+         if (mm == 254) gl_FragColor = vec4(0., 0., 0., 1.);
+         else{
+	   float a = float(mm);  a = mod(a, 30.) / 10.;
+	   gl_FragColor = vec4( max(0., abs(a - 1.5) - .5),
+	   max(0., 1. - abs(a - 1.)), max(0., 1. - abs(a - 2.)), 1.);
+	 }
+       }
     </script>
   </head>
 
