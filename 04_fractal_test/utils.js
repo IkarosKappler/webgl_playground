@@ -46,23 +46,3 @@ function getShader(gl, id) {
     
     return shader;
 }
-
-
-
-// +---------------------------------------------------------------------------
-// | Set random colors to the passed vertex/color buffer (array).
-// +----------------------------------------------------------------
-var makeRandomVertexColors = function( buffer ) {
-    for( var i = 0; i < buffer.length; i+=6 ) {
-	buffer[i+3] = Math.random();
-	buffer[i+4] = Math.random();
-	buffer[i+5] = Math.random();
-    }
-};
-
-// +---------------------------------------------------------------------------
-// | Get a random integer in the range [min,max).
-// +----------------------------------------------------------------
-//var randomInt = function( min, max ) {
-//    return min + Math.floor( Math.random()*(max-min) );
-//};

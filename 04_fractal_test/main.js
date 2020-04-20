@@ -31,10 +31,10 @@
 		       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		       // Let OpenGL manage the depth :)
-		       gl.enable(gl.DEPTH_TEST);
-		       gl.enable(gl.CULL_FACE);
-		       gl.frontFace(gl.CCW);
-		       gl.cullFace(gl.BACK);
+		       //gl.enable(gl.DEPTH_TEST);
+		       //gl.enable(gl.CULL_FACE);
+		       //gl.frontFace(gl.CCW);
+		       //gl.cullFace(gl.BACK);
 
 		       initShaders();
  
@@ -94,41 +94,38 @@
     // +----------------------------------------------------------------
     var start = function() {	
 	// Create buffer
-	var planeVertices = 
-	    [
-		// X, Y, Z           R, G, B
-		// Top
-		-1.0, 1.0, -1.0,   0.5, 0.5, 0.5,
-		-1.0, 1.0, 1.0,    0.5, 0.5, 0.5,
-		1.0, 1.0, 1.0,     0.5, 0.5, 0.5,
-		1.0, 1.0, -1.0,    0.5, 0.5, 0.5	
-	    ];
-	makeRandomVertexColors(planeVertices);
-	 
+	var planeVertices =  [
+	    // X, Y, Z
+	    -1,-1,0,
+	    1,-1,0,
+	    -1,1,0,
+	    1,1,0
+	];
+	/* 
 	var planeIndices =
 	    [
 		// Top
 		0, 1, 2,
 		0, 2, 3		
 	    ];
-
+	*/
 	var planeVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, planeVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planeVertices), gl.STATIC_DRAW);
-	
+	/*
 	var planeIndexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, planeIndexBufferObject);
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(planeIndices), gl.STATIC_DRAW);
-	
+	*/
 	var positionAttribLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
 
 	gl.vertexAttribPointer(
-	    positionAttribLocation, // Attribute location
-	    3, // Number of elements per attribute
-	    gl.FLOAT, // Type of elements
+	    positionAttribLocation,             // Attribute location
+	    3,                                  // Number of elements per attribute
+	    gl.FLOAT,                           // Type of elements
 	    gl.FALSE,
-	    6 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-	    0 // Offset from the beginning of a single vertex to this attribute
+	    3 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+	    0                                   // Offset from the beginning of a single vertex to this attribute
 	);
 	
 	gl.enableVertexAttribArray(positionAttribLocation);
@@ -137,6 +134,7 @@
 	gl.useProgram(shaderProgram);
 
 	var loop = function (time) {
+	    // console.log( canvas.width, canvas.height );
 	    
             // gl.clearColor(0.75, 0.85, 0.8, 1.0);
 	    gl.clearColor(0.75, 0.85, Math.abs( (1000-time%2000)/1000 ), 1.0);
@@ -149,7 +147,8 @@
 	    gl.uniform2f( uCanvasSizeUniformLocation, canvas.width, canvas.height ); // Do this on each loop???
 	    gl.uniform1i( iterationCountUniformLocation, iterationCount );
 	    
-            gl.drawElements(gl.TRIANGLE_STRIP, planeIndices.length, gl.UNSIGNED_SHORT, 0);
+            // gl.drawElements(gl.TRIANGLE_STRIP, planeIndices.length, gl.UNSIGNED_SHORT, 0);
+	    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 	    
             requestAnimationFrame(loop);
 	};
