@@ -17,6 +17,7 @@
     var cUniformLocation;
     var uCanvasSizeUniformLocation;
     var iterationCountUniformLocation;
+    var uGreyscaleUniformLocation;
     var vertexShader;
     var fragmentShader;
     var shaderProgram;
@@ -85,6 +86,7 @@
 	cUniformLocation = gl.getUniformLocation(shaderProgram, 'uC' );
 	uCanvasSizeUniformLocation = gl.getUniformLocation(shaderProgram, 'uCanvasSize' );
 	iterationCountUniformLocation = gl.getUniformLocation(shaderProgram, 'uIterationCount' );
+	uGreyscaleUniformLocation = gl.getUniformLocation(shaderProgram, 'uGreyscale' );
     };
 
 
@@ -133,6 +135,7 @@
 	    var iterationCount = 255;
 	    gl.uniform2f( cUniformLocation, config.re, config.im );
 	    gl.uniform1i( iterationCountUniformLocation, iterationCount );
+	    gl.uniform1i( uGreyscaleUniformLocation, config.greyscale );
 	    
             // gl.drawElements(gl.TRIANGLE_STRIP, planeIndices.length, gl.UNSIGNED_SHORT, 0);
 	    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
