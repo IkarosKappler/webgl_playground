@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Fractal Test</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Content Description" />
+    <meta name="keywords" content="any, keywords, you, want" />
+    <meta name="author" content="Ikaros Kappler" />
+    <meta name="date" content="2020-04-20" />
+
+    <script src="dat.gui.min.js"></script>
+    <script src="dat.gui.title.polyfill.js"></script>
+
+    <script>  
+      var config = {
+      re : 0.13,
+      im : 0.35,
+      greyscale : false
+      };
+
+      window.addEventListener('load', function() {
+      var gui = new dat.gui.GUI();
+      gui.add(config, 're').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The real part.");
+      gui.add(config, 'im').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The imaginary part.");
+      gui.add(config, 'greyscale').title("Use greyscale gradients.");
+      } );
+    </script>
+    
+    <!-- Load custom scripts --->
+    <script src="initWebGL.js"></script>
+    <script src="utils.js"></script>
+    <script src="canvasFullpage.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <!-- Define vertex shader program -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+      precision mediump float;
+
+      attribute vec3 aPosition;
+
+      uniform vec2 uRotationVector;
+
+      void main(void) {
+        gl_Position = vec4(aPosition, 1.);
+      }
+    </script>
+    
+    <script id="shader-fs" type="x-shader/x-fragment">
+      // Inspired by
+      //    https://www.ibiblio.org/e-notes/webgl/julia.html
+      precision highp float;
+
+      uniform vec2 uC;
+      uniform vec2 uCanvasSize;
+      uniform int  uIterationCount;
+      uniform bool uGreyscale;
+
+      void main(void) {
+         float R = (gl_FragCoord.x - uCanvasSize.x) / uCanvasSize.y*1.5;
+         float I = (gl_FragCoord.y - uCanvasSize.y) / uCanvasSize.y*1.5;
+         float R2 = R*R, I2 = I*I;
+         int mm;
+         for(int m = 0; m < 255; m++){
+	    I=(R+R)*I + uC.y;  R=R2-I2 + uC.x;  R2=R*R;  I2=I*I;   mm = m;
+	    if( R2 + I2 > 4. )
+	       break;
+         } // END for
+
+         if (mm == 254) {
+  	    gl_FragColor = vec4(0., 0., 0., 1.);	
+         } else {
+	   float a = float(mm);
+	   a = mod(a, 30.) / 10.;
+	   gl_FragColor = vec4(
+	      max(0., abs(a - 1.5) - .5),
+	      max(0., 1. - abs(a - 1.)),
+	      max(0., 1. - abs(a - 2.)),
+	1.);
+	   if( uGreyscale ) {
+	      gl_FragColor = vec4(
+	         max(0., abs(a - 1.5) - .5),
+	         max(0., abs(a - 1.5) - .5), // max(0., 1. - abs(a - 1.)),
+	         max(0., abs(a - 1.5) - .5), // max(0., 1. - abs(a - 2.)),
+	         1.);
+
+	   } else {
+	      gl_FragColor = vec4(
+	         1.0, // max(0., abs(a - 1.5) - .5),
+	         1.0, // max(0., 1. - abs(a - 1.)),
+	         1.0, // max(0., 1. - abs(a - 2.)),
+	         1.);
+	   }
+         }
+      } // END main
+    </script>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="640" height="480" style="width: 640px; height: 480px;">
+      Your browser does not support WebGL.
+    </canvas>
+  </body>
+</html>
