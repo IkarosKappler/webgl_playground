@@ -31,18 +31,18 @@
 		       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 		       // Let OpenGL manage the depth :)
-		       //gl.enable(gl.DEPTH_TEST);
-		       //gl.enable(gl.CULL_FACE);
-		       //gl.frontFace(gl.CCW);
-		       //gl.cullFace(gl.BACK);
+		       gl.enable(gl.DEPTH_TEST);
+		       gl.enable(gl.CULL_FACE);
+		       gl.frontFace(gl.CCW);
+		       gl.cullFace(gl.BACK);
 
 		       initShaders();
- 
 		       start();
 
 		       canvasFullpage( canvas,
 				       function( _canvas, _w, _h ) {
-					   console.log('updating viewport');
+					   // console.log('updating viewport');
+					   gl.uniform2f( uCanvasSizeUniformLocation, canvas.width/2, canvas.height/2 ); 
 					   gl.viewport(0,0,canvas.width,canvas.height);
 				       }
 				     );
@@ -96,27 +96,16 @@
 	// Create buffer
 	var planeVertices =  [
 	    // X, Y, Z
-	    -1,-1,0,
-	    1,-1,0,
-	    -1,1,0,
-	    1,1,0
+	    -1, -1,  0,
+	     1, -1,  0,
+	    -1,  1,  0,
+	     1,  1,  0
 	];
-	/* 
-	var planeIndices =
-	    [
-		// Top
-		0, 1, 2,
-		0, 2, 3		
-	    ];
-	*/
+
 	var planeVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, planeVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planeVertices), gl.STATIC_DRAW);
-	/*
-	var planeIndexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, planeIndexBufferObject);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(planeIndices), gl.STATIC_DRAW);
-	*/
+
 	var positionAttribLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
 
 	gl.vertexAttribPointer(
@@ -134,17 +123,15 @@
 	gl.useProgram(shaderProgram);
 
 	var loop = function (time) {
-	    // console.log( canvas.width, canvas.height );
-	    
+
+	    // Static color ...?
             // gl.clearColor(0.75, 0.85, 0.8, 1.0);
+	    // ... or animate background color?
 	    gl.clearColor(0.75, 0.85, Math.abs( (1000-time%2000)/1000 ), 1.0);
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
-	    var re = 0.35;
-	    var im = 0.12;
-	    var iterationCount = 10;
-	    gl.uniform2f( cUniformLocation, re, im );
-	    gl.uniform2f( uCanvasSizeUniformLocation, canvas.width, canvas.height ); // Do this on each loop???
+	    var iterationCount = 255;
+	    gl.uniform2f( cUniformLocation, config.re, config.im );
 	    gl.uniform1i( iterationCountUniformLocation, iterationCount );
 	    
             // gl.drawElements(gl.TRIANGLE_STRIP, planeIndices.length, gl.UNSIGNED_SHORT, 0);

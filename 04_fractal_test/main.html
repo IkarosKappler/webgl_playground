@@ -9,6 +9,22 @@
     <meta name="author" content="Ikaros Kappler" />
     <meta name="date" content="2020-04-20" />
 
+    <script src="dat.gui.min.js"></script>
+    <script src="dat.gui.title.polyfill.js"></script>
+
+    <script>  
+      var config = {
+      re : 0.13,
+      im : 0.35
+      };
+
+      window.addEventListener('load', function() {
+      var gui = new dat.gui.GUI();
+      gui.add(config, 're').min(-1).max(1.0).step(0.01).onChange( function() {  } ).title("The real part.");
+      gui.add(config, 'im').min(-1).max(1.0).step(0.01).onChange( function() {  } ).title("The imaginary part.");
+      } );
+    </script>
+    
     <!-- Load custom scripts --->
     <script src="initWebGL.js"></script>
     <script src="utils.js"></script>
@@ -25,20 +41,13 @@
       uniform vec2 uRotationVector;
 
       void main(void) {
-	//vec2 rotatedPosition = vec2(
-	//    aPosition.x * uRotationVector.y +
-	//	aPosition.y * uRotationVector.x,
-	//    aPosition.y * uRotationVector.y -
-//		aPosition.x * uRotationVector.x
-//	);
-
-      //	gl_Position = vec4(rotatedPosition, aPosition.z, 1.0);
         gl_Position = vec4(aPosition, 1.);
       }
     </script>
     
-    <!-- Define fragment shader program -->
-    <script id="shader-fs" type="x-shader/x-fragment">      
+    <script id="shader-fs" type="x-shader/x-fragment">
+      // Inspired by
+      //    https://www.ibiblio.org/e-notes/webgl/julia.html
       precision highp float;
 
       uniform vec2 uC;
@@ -46,32 +55,21 @@
       uniform int  uIterationCount;
 
       void main(void) {
-         float R = (gl_FragCoord.x - uCanvasSize.x) / uCanvasSize.y;
-         float I = (gl_FragCoord.y - uCanvasSize.x) / uCanvasSize.y;
-         float R2 = R*R, I2 = I*I;
-         int mm;
-         for(int m = 0; m < 255; m++){
-			    I=(R+R)*I + uC.y;
-			    R=R2-I2 + uC.x;
-			    R2=R*R;
-			    I2=I*I;
-			    mm = m;
+      float R = (gl_FragCoord.x - uCanvasSize.x) / uCanvasSize.y;
+      float I = (gl_FragCoord.y - uCanvasSize.y) / uCanvasSize.y;
+      float R2 = R*R, I2 = I*I;
+      int mm;
+      for(int m = 0; m < 255; m++){
+			 I=(R+R)*I + uC.y;  R=R2-I2 + uC.x;  R2=R*R;  I2=I*I;   mm = m;
 			 if( R2 + I2 > 4. ) break;
-         }
-        if (mm == 254) {
-	// gl_FragColor = vec4(0., 0., 0., 1.);
-	   gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, 0., 1.);
-        } else{
-	   float a = float(mm);
-	   a = mod(a, 30.) / 10.;
-  	   //gl_FragColor = vec4(
-	    //  max(0., abs(a - 1.5) - .5),
-	      //max(0., 1. - abs(a - 1.)),
-	      //max(0., 1. - abs(a - 2.)),
-	//1.);
-	gl_FragColor = vec4(gl_FragCoord.x/uCanvasSize.x, gl_FragCoord.y/uCanvasSize.y, 0., 1.);
-	 }
-      } // END main
+	}
+	if (mm == 254) gl_FragColor = vec4(0., 0., 0., 1.);
+	else{
+	float a = float(mm);  a = mod(a, 30.) / 10.;
+	gl_FragColor = vec4( max(0., abs(a - 1.5) - .5),
+	max(0., 1. - abs(a - 1.)), max(0., 1. - abs(a - 2.)), 1.);
+	}
+	} // END main
     </script>
   </head>
 
