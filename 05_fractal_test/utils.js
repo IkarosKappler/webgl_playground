@@ -71,7 +71,7 @@ var requestResource = function(path,success,reject) {
     xhr.onload = function() {
 	if (xhr.status === 200) 
 	    success(xhr.responseText);
-	else 
+	else if( typeof reject == 'function' )
 	    reject(xhr.status);
     };
     xhr.send();

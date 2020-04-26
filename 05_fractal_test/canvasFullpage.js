@@ -25,6 +25,8 @@ var canvasFullpage = function( canvas, onChange ) {
 
 	fireEvent(w,h);
     };
+    this.triggerResize = function() { handler(null); };
     window.addEventListener('resize', handler );
     handler( null );
+    return this;
 };

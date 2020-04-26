@@ -20,6 +20,7 @@
     var vertexShader;
     var fragmentShader;
     var shaderProgram;
+    var resizeHandler;
     
     var init = function() {
 	canvas = document.getElementById('canvas');
@@ -36,17 +37,18 @@
 		       gl.frontFace(gl.CCW);
 		       gl.cullFace(gl.BACK);
 
-		       initShaders( function() {
-			   start();
-
-			   canvasFullpage( canvas,
-					   function( _canvas, _w, _h ) {
-					       // console.log('updating viewport');
-					       gl.uniform2f( uCanvasSizeLocation, canvas.width/2, canvas.height/2 ); 
-					       gl.viewport(0,0,canvas.width,canvas.height);
-					   }
-					 );
-		       } );
+		       resizeHandler = canvasFullpage(
+			   canvas,
+			   function( _canvas, _w, _h ) {		       
+			       if( !shaderProgram )
+				   return;
+			       console.log('updating viewport');
+			       gl.uniform2f( uCanvasSizeLocation, canvas.width/2, canvas.height/2 ); 
+			       gl.viewport(0,0,canvas.width,canvas.height);
+			   }
+		       );
+		       
+		       initShaders();
 		   },
 		   function(errmsg) {
 		       console.warn( errmsg );
@@ -54,33 +56,39 @@
 		 );
     }; // END function init
 
+    window.recompile = function() {
+	destroy();
+	initShaders();
+    }
 
     // +---------------------------------------------------------------------------
     // | Initialize the shaders.
     // | This requires the getShader function (in utils.js) to be present.
     // +----------------------------------------------------------------
     var initShaders = function( success ) {
-	// This would be used if the shader program are located inside the HTML
-	// fragmentShader = getShader(gl, 'shader-fs');
-	// vertexShader = getShader(gl, 'shader-vs');
-	// initShaderProgram();
-	// success();
 
-	
-	getExternalShader(gl, 'shader.vert', "x-shader/x-vertex", function(_vertexShader) {
+	getExternalShader( gl, 'shader.vert', "x-shader/x-vertex", function(_vertexShader) {
 	    vertexShader = _vertexShader;
-	    getExternalShader(gl, 'shader.frag', "x-shader/x-fragment", function(_fragmentShader) {
-		fragmentShader = _fragmentShader;
-		initShaderProgram();
-		success();
-	    });
+	    requestResource( 'shader.frag',
+			     function(fragmentScriptSource) {
+				 // Replace the value of the uIterationCount uniform
+				 fragmentScriptSource = fragmentScriptSource.replace(
+				     /const int iterationCount = (\d+);/g,
+				     "const int iterationCount = " + config.iterationCount + ";" );
+				 // console.log( fragmentScriptSource );
+				 console.log('Recompiling the fragment script with iterationCount ', config.iterationCount );
+				 // Now compile the modified shader program
+				 fragmentShader = compileShader(gl, fragmentScriptSource, "x-shader/x-fragment");
+				 initShaderProgram();
+				 start();
+			     }
+			   );
 	} ); 
     }
 
     var initShaderProgram = function() {
 	// Make shaders
 	shaderProgram = gl.createProgram();
-	//console.log('mkShaderProgram',shaderProgram);
 
 	gl.attachShader(shaderProgram, vertexShader);
 	gl.attachShader(shaderProgram, fragmentShader);
@@ -103,6 +111,8 @@
 	uCLocation = gl.getUniformLocation(shaderProgram, 'uC' );
 	uCanvasSizeLocation = gl.getUniformLocation(shaderProgram, 'uCanvasSize' );
 	uGreyscaleLocation = gl.getUniformLocation(shaderProgram, 'uGreyscale' );
+
+	resizeHandler.triggerResize();
     };
 
 
@@ -159,7 +169,13 @@
 	};
 	requestAnimationFrame(loop);
     }; // END function start
+
+    var destroy = function() {
+	console.log('Destroying shader program.');
+	gl.deleteProgram( shaderProgram );
+    };
     
     window.addEventListener('load',init);
+    window.addEventListener('unload',destroy);
 
 })();
