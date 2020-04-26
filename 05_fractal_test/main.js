@@ -36,16 +36,17 @@
 		       gl.frontFace(gl.CCW);
 		       gl.cullFace(gl.BACK);
 
-		       initShaders();
-		       start();
+		       initShaders( function() {
+			   start();
 
-		       canvasFullpage( canvas,
-				       function( _canvas, _w, _h ) {
-					   // console.log('updating viewport');
-					   gl.uniform2f( uCanvasSizeLocation, canvas.width/2, canvas.height/2 ); 
-					   gl.viewport(0,0,canvas.width,canvas.height);
-				       }
-				     );
+			   canvasFullpage( canvas,
+					   function( _canvas, _w, _h ) {
+					       // console.log('updating viewport');
+					       gl.uniform2f( uCanvasSizeLocation, canvas.width/2, canvas.height/2 ); 
+					       gl.viewport(0,0,canvas.width,canvas.height);
+					   }
+					 );
+		       } );
 		   },
 		   function(errmsg) {
 		       console.warn( errmsg );
@@ -58,11 +59,28 @@
     // | Initialize the shaders.
     // | This requires the getShader function (in utils.js) to be present.
     // +----------------------------------------------------------------
-    var initShaders = function() {
-	fragmentShader = getShader(gl, 'shader-fs');
-	vertexShader = getShader(gl, 'shader-vs');
+    var initShaders = function( success ) {
+	// This would be used if the shader program are located inside the HTML
+	// fragmentShader = getShader(gl, 'shader-fs');
+	// vertexShader = getShader(gl, 'shader-vs');
+	// initShaderProgram();
+	// success();
+
+	
+	getExternalShader(gl, 'shader.vert', "x-shader/x-vertex", function(_vertexShader) {
+	    vertexShader = _vertexShader;
+	    getExternalShader(gl, 'shader.frag', "x-shader/x-fragment", function(_fragmentShader) {
+		fragmentShader = _fragmentShader;
+		initShaderProgram();
+		success();
+	    });
+	} ); 
+    }
+
+    var initShaderProgram = function() {
 	// Make shaders
 	shaderProgram = gl.createProgram();
+	//console.log('mkShaderProgram',shaderProgram);
 
 	gl.attachShader(shaderProgram, vertexShader);
 	gl.attachShader(shaderProgram, fragmentShader);
@@ -106,6 +124,7 @@
 	gl.bindBuffer(gl.ARRAY_BUFFER, planeVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(planeVertices), gl.STATIC_DRAW);
 
+	//console.log( 'shaderProgram', shaderProgram );
 	var positionAttribLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
 
 	gl.vertexAttribPointer(
@@ -125,9 +144,9 @@
 	var loop = function (time) {
 
 	    // Static color ...?
-            // gl.clearColor(0.75, 0.85, 0.8, 1.0);
+            gl.clearColor(0.75, 0.85, 0.8, 1.0);
 	    // ... or animate background color?
-	    gl.clearColor(0.75, 0.85, Math.abs( (1000-time%2000)/1000 ), 1.0);
+	    // gl.clearColor(0.75, 0.85, Math.abs( (1000-time%2000)/1000 ), 1.0);
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
 	    gl.uniform2f( uCLocation, config.re, config.im );

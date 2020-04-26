@@ -2,10 +2,10 @@
 
 My playground for raw WebGL coding.
 
-![Screenshot](webgl_playground_20171107_0.png)
+![Screenshot](20171107_webgl_playground_0.png)
 
 
-### Known Issues
+### Known Issues (yet to be solved)
 * Changing viewport size causes warning: "Drawing to a destination rect smaller than the viewport rect."
 * The viewport has a strange clipping area after resizing.
 
