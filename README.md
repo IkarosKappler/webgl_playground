@@ -16,9 +16,20 @@ My playground for raw WebGL coding.
 
 
 ### Changelog
+* [2020-04-22]
+    * Added a webGL Julia set example.
+* [2017-11-09]
+    * Renamed the geometry's 'position' array  to 'vertices'.
+    * Rename dthe geometry's 'indices' array to 'faces'.
+    * Added a basic scene array (containg one element at the moment).
+    * Created a new sub project: 04_multiple_meshes.
+    * Added a new uniform the the fragment shader program: uDrawTexture (bool).
+    * Added a function 'set' to the Vector3 class.
+
 * [2017-11-08]
     * Added a 'scale' attribute to the CubeGeometry.
     * Added a 'rotation' attribute to the CubeGeometry.
+        * Added a simple Vector3 class.	  
 
 * [2017-11-07]
     * Added a scaling vector (x,y,z) to the cube on shader level.

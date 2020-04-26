@@ -14,10 +14,9 @@
     var gl;
     var canvas;
     var viewMatrix, projMatrix;
-    var cUniformLocation;
-    var uCanvasSizeUniformLocation;
-    var iterationCountUniformLocation;
-    var uGreyscaleUniformLocation;
+    var uCLocation;
+    var uCanvasSizeLocation;
+    var uGreyscaleLocation;
     var vertexShader;
     var fragmentShader;
     var shaderProgram;
@@ -43,7 +42,7 @@
 		       canvasFullpage( canvas,
 				       function( _canvas, _w, _h ) {
 					   // console.log('updating viewport');
-					   gl.uniform2f( uCanvasSizeUniformLocation, canvas.width/2, canvas.height/2 ); 
+					   gl.uniform2f( uCanvasSizeLocation, canvas.width/2, canvas.height/2 ); 
 					   gl.viewport(0,0,canvas.width,canvas.height);
 				       }
 				     );
@@ -83,10 +82,9 @@
 	var vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 'aPosition' );
 	gl.enableVertexAttribArray(vertexPositionAttribute);
 
-	cUniformLocation = gl.getUniformLocation(shaderProgram, 'uC' );
-	uCanvasSizeUniformLocation = gl.getUniformLocation(shaderProgram, 'uCanvasSize' );
-	iterationCountUniformLocation = gl.getUniformLocation(shaderProgram, 'uIterationCount' );
-	uGreyscaleUniformLocation = gl.getUniformLocation(shaderProgram, 'uGreyscale' );
+	uCLocation = gl.getUniformLocation(shaderProgram, 'uC' );
+	uCanvasSizeLocation = gl.getUniformLocation(shaderProgram, 'uCanvasSize' );
+	uGreyscaleLocation = gl.getUniformLocation(shaderProgram, 'uGreyscale' );
     };
 
 
@@ -132,10 +130,8 @@
 	    gl.clearColor(0.75, 0.85, Math.abs( (1000-time%2000)/1000 ), 1.0);
             gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   
-	    var iterationCount = 255;
-	    gl.uniform2f( cUniformLocation, config.re, config.im );
-	    gl.uniform1i( iterationCountUniformLocation, iterationCount );
-	    gl.uniform1i( uGreyscaleUniformLocation, config.greyscale );
+	    gl.uniform2f( uCLocation, config.re, config.im );
+	    gl.uniform1i( uGreyscaleLocation, config.greyscale );
 	    
             // gl.drawElements(gl.TRIANGLE_STRIP, planeIndices.length, gl.UNSIGNED_SHORT, 0);
 	    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

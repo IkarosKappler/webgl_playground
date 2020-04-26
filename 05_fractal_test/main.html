@@ -12,18 +12,19 @@
     <script src="dat.gui.min.js"></script>
     <script src="dat.gui.title.polyfill.js"></script>
 
-    <script>  
+    <script>
+      // Make a GUI interface for input
       var config = {
-      re : 0.13,
-      im : 0.35,
-      greyscale : false
+         re : 0.13,
+         im : 0.35,
+         greyscale : true
       };
 
       window.addEventListener('load', function() {
-      var gui = new dat.gui.GUI();
-      gui.add(config, 're').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The real part.");
-      gui.add(config, 'im').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The imaginary part.");
-      gui.add(config, 'greyscale').title("Use greyscale gradients.");
+         var gui = new dat.gui.GUI();
+         gui.add(config, 're').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The real part.");
+         gui.add(config, 'im').min(-1.0).max(1.0).step(0.001).onChange( function() {  } ).title("The imaginary part.");
+         gui.add(config, 'greyscale').title("Use greyscale gradients.");
       } );
     </script>
     
@@ -54,21 +55,26 @@
 
       uniform vec2 uC;
       uniform vec2 uCanvasSize;
-      uniform int  uIterationCount;
       uniform bool uGreyscale;
+
+      const int iterationCount = 255;
 
       void main(void) {
          float R = (gl_FragCoord.x - uCanvasSize.x) / uCanvasSize.y*1.5;
          float I = (gl_FragCoord.y - uCanvasSize.y) / uCanvasSize.y*1.5;
          float R2 = R*R, I2 = I*I;
          int mm;
-         for(int m = 0; m < 255; m++){
-	    I=(R+R)*I + uC.y;  R=R2-I2 + uC.x;  R2=R*R;  I2=I*I;   mm = m;
+         for(int m = 0; m < iterationCount; m++) {
+	    I=(R+R)*I + uC.y;
+	    R=R2-I2 + uC.x;
+	    R2=R*R;
+	    I2=I*I;
+	    mm = m;
 	    if( R2 + I2 > 4. )
 	       break;
          } // END for
 
-         if (mm == 254) {
+         if (mm == iterationCount-1) {
   	    gl_FragColor = vec4(0., 0., 0., 1.);	
          } else {
 	   float a = float(mm);
@@ -77,7 +83,7 @@
 	      max(0., abs(a - 1.5) - .5),
 	      max(0., 1. - abs(a - 1.)),
 	      max(0., 1. - abs(a - 2.)),
-	1.);
+	      1.);
 	   if( uGreyscale ) {
 	      gl_FragColor = vec4(
 	         max(0., abs(a - 1.5) - .5),
